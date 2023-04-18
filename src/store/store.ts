@@ -1,4 +1,5 @@
-import { makeAutoObservable, observable } from "mobx";
+import { action, makeAutoObservable, observable } from "mobx";
+import { DistributionStore } from "./DistributionStore";
 import { ActiveCellStore } from "./ui/ActiveCellStore";
 import { CellValue, getCellId } from "../utils/cells";
 import { CellStore } from "./CellStore";
@@ -7,6 +8,7 @@ import { CellStore } from "./CellStore";
 // Cells can reference other cells in the same namespace
 export class NamespaceStore {
   cells: Map<string, CellStore> = observable.map();
+  distributionStore = new DistributionStore();
   activeCellStore: ActiveCellStore;
   rowCount: number;
   columnCount: number;
@@ -31,7 +33,12 @@ export class NamespaceStore {
   evaluateCell(id: string): CellValue {
     const cell = this.getCell(id);
     if (cell === undefined) {
-      throw new Error(`Unknown cell: ${id}`);
+      // Check if it's a distribution
+      const distribution = this.distributionStore.distributions.get(id);
+      if (distribution !== undefined) {
+        return distribution.samples;
+      }
+      throw new Error(`Unknown cell or distribution: ${id}`);
     }
     return cell.value;
   }
