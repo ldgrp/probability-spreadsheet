@@ -83,6 +83,7 @@ export const Cell = observer(({ store, activeCellStore }: CellProps) => {
     if (
       isCellInput(document.activeElement) &&
       isCellInput(e.target) &&
+      activeCellStore.cell.isEditing &&
       activeCellStore.formula?.startsWith("=")
     ) {
       // Check if we can insert the id of the cell into the formula
