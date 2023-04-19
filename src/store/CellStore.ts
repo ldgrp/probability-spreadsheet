@@ -2,8 +2,35 @@ import { makeAutoObservable } from "mobx";
 import { evaluate } from "../parse";
 import { NamespaceStore } from "./store";
 import { CellValue } from "../utils/cells";
+import {
+  Beta,
+  Triangular,
+  Uniform,
+  Normal,
+  LogNormal,
+} from "../distributions/distributions";
 
-const CELL_ID_REGEX_GLOBAL = /[a-zA-Z_][a-zA-Z0-9_]*/g;
+const N = 10000;
+const functions = new Map<string, (args: number[]) => number[]>();
+functions.set(
+  "triangular",
+  ([a, b, c]) =>
+    new Triangular("triangular", "Triangular", N, a, b, c ?? (a + b) / 2)
+      .samples
+);
+functions.set(
+  "uniform",
+  ([a, b]) => new Uniform("uniform", "Uniform", N, a, b).samples
+);
+functions.set("beta", ([a, b]) => new Beta("beta", "Beta", N, a, b).samples);
+functions.set(
+  "normal",
+  ([mean, std]) => new Normal("normal", "Normal", N, mean, std).samples
+);
+functions.set(
+  "lognormal",
+  ([mean, std]) => new LogNormal("lognormal", "LogNormal", N, mean, std).samples
+);
 
 /**
  * A cell is a formula that can be evaluated.
@@ -23,12 +50,12 @@ export class CellStore {
 
     makeAutoObservable(this);
   }
-  
+
   /**
    * Whether the cell is currently focused.
    * It is the responsibility of this class to keep this value up to date
    * and make sure that only one cell is focused at a time.
-   * 
+   *
    * See focus() below.
    */
   private _isFocused: boolean = false;
@@ -44,7 +71,7 @@ export class CellStore {
   set isEditing(value: boolean) {
     // Update the formula on the falling edge of isEditing
     if (this._isEditing !== value && value === false) {
-        this.formula = this.namespace.activeCellStore.formula;
+      this.formula = this.namespace.activeCellStore.formula;
     }
 
     this._isEditing = value;
@@ -52,17 +79,17 @@ export class CellStore {
 
   get isEditing(): boolean {
     return this._isEditing;
-}
+  }
 
   /**
    * Maintain the invariant that only one cell is focused at a time.
    */
   focus(oldCell?: CellStore) {
     if (oldCell === this) {
-        return;
+      return;
     }
     if (oldCell !== undefined) {
-        oldCell.isFocused = false;
+      oldCell.isFocused = false;
     }
     this.isFocused = true;
   }
@@ -72,36 +99,24 @@ export class CellStore {
    */
   get value(): CellValue {
     if (this.formula === "") {
-      return []
+      return [];
     }
 
     if (this.formula.startsWith("=")) {
-      // Find all cell references
-      const matches = this.formula.matchAll(CELL_ID_REGEX_GLOBAL);
-
-      // Evaluate all cell references
-      const values = new Map<string, number[]>();
-      for (const match of matches) {
-        try {
-            const value = this.namespace.evaluateCell(match[0]);
-            if (typeof value === 'string')
-                return `Error: Cell ${match[0]} is not a number or array`;
-            if (value.length === 0)
-              values.set(match[0], [0])
-            else
-              values.set(match[0], value);
-        } catch (e) {
-            if (e instanceof Error && e.message.includes('Cycle'))
-                return 'Error: Cycle detected';
-            return "Error";
-        }
-      }
+      const fn = (identifier: string) => {
+        const value = this.namespace.evaluateCell(identifier);
+        if (Array.isArray(value)) return value;
+        return undefined;
+      };
 
       try {
-        return evaluate(this.formula.slice(1), values);
-      } catch(e) {
-        console.error(e)
-        return "Syntax error"
+        return evaluate(this.formula.slice(1), fn, functions);
+      } catch (e) {
+        if (e instanceof Error) {
+          if (e.message.includes("Cycle")) return "Error: Cycle detected";
+          return e.message;
+        }
+        return "Syntax error";
       }
     }
 
@@ -118,11 +133,9 @@ export class CellStore {
    */
   get displayValue(): string | number {
     const value = this.value;
-    if (typeof value === 'string')
-      return value;
-    if (value.length === 0)
-      return '';
+    if (typeof value === "string") return value;
+    if (value.length === 0) return "";
     const sum = value.reduce((a, b) => a + b, 0);
-    return sum/value.length;
+    return sum / value.length;
   }
 }

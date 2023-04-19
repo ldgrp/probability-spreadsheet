@@ -3,7 +3,8 @@ import { observer } from "mobx-react-lite";
 import { ActiveCellStore } from "../store/ui/ActiveCellStore";
 import { CellValue } from "../utils/cells";
 import { Fragment, useEffect, useRef } from "react";
-import stats from "@stdlib/stats/base"
+import mean from "@stdlib/stats/base/mean"
+import mediansorted from "@stdlib/stats/base/mediansorted"
 
 type ViewerProps = {
   activeCellStore: ActiveCellStore;
@@ -25,7 +26,7 @@ export const Viewer = observer(({ activeCellStore }: ViewerProps) => {
   const value = activeCellStore.cell.value;
   const viewtype = getViewType(value);
   return (
-    <div className="rounded-lg flex border border-gray-200 shadow p-4 h-64 items-center justify-center">
+    <div className="rounded-lg flex border border-gray-200 shadow p-4 h-48 items-center justify-center">
       {viewtype === "string" && <StringViewer value={value as string} />}
       {viewtype === "number" && <NumberViewer value={(value as number[])[0]} />}
       {viewtype === "array" && <ArrayViewer value={value as number[]} />}
@@ -64,10 +65,11 @@ type ArrayViewerProps = {
 const ArrayViewer = ({ value }: ArrayViewerProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const sortedValues = value.sort();
+
   const params = {
     samples: value.length,
-    mean: stats.mean(value.length, sortedValues, 1),
-    median: stats.mediansorted(value.length, sortedValues, 1),
+    mean: mean(value.length, sortedValues, 1),
+    median: mediansorted(value.length, sortedValues, 1),
     max: sortedValues[sortedValues.length - 1],
     min: sortedValues[0],
   }
@@ -75,7 +77,7 @@ const ArrayViewer = ({ value }: ArrayViewerProps) => {
   useEffect(() => {
     const plot = Plot.plot({
       width: 300,
-      height: 220,
+      height: 170,
       marks: [Plot.rectY(value, Plot.binX({ y: "count" })), Plot.ruleY([0])],
     });
     if (ref.current) ref.current.append(plot);

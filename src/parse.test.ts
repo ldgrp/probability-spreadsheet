@@ -30,8 +30,9 @@ it('should evaluate simple expressions', () => {
 })
 
 it('should evaluate expressions with variables', () => {
-    const environment = new Map<string, number[]>()
-    environment.set('a', [1, 1])
+    const variables = new Map<string, number[]>()
+    const environment = variables.get
+    variables.set('a', [1, 1])
     expect(evaluate('a + 2 + 3 * 4', environment)).toEqual([15, 15])
     expect(() => evaluate('a + 2 + 3 * 4')).toThrowError('No environment set')
 
@@ -39,11 +40,11 @@ it('should evaluate expressions with variables', () => {
     expect(() => evaluate('b + 2 + 3 * 4', environment)).toThrowError('Unknown variable: b')
 
     // Expect mismatched array lengths to throw an error
-    environment.set('b', [1, 1, 1])
+    variables.set('b', [1, 1, 1])
     expect(() => evaluate('a + b', environment)).toThrowError('Mismatched array lengths: 2 and 3')
 
     // Expect matching array lengths to work
-    environment.set('c', [2, 2])
+    variables.set('c', [2, 2])
     expect(evaluate('a + c', environment)).toEqual([3, 3])
     expect(evaluate('a * c', environment)).toEqual([2, 2])
 })
