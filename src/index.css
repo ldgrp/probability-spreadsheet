@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 body {
-  @apply bg-white text-gray-900 flex min-h-screen place-content-center place-items-center;
+  @apply bg-white text-gray-900 flex min-h-screen justify-start;
 }
 
 .sheet-container {
-  @apply flex flex-col items-center bg-gray-50 border border-gray-200 rounded-lg shadow pb-0 overflow-hidden;
+  @apply flex flex-col items-center bg-gray-50 border border-gray-200 rounded-lg shadow pb-0 overflow-hidden container;
 }
 
 .my-table {
-  @apply max-w-3xl overflow-hidden m-6;
+  @apply overflow-hidden m-2;
 }
 
 th {

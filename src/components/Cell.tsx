@@ -66,9 +66,16 @@ export const Cell = observer(({ store, activeCellStore }: CellProps) => {
       } else if (e.key === "Enter") {
         e.preventDefault();
         store.isEditing = true;
-      } else if (isNotModifierKey(e.nativeEvent)) {
+      } else if (e.key === "Tab") {
+        e.preventDefault();
+        const dir = e.shiftKey ? "left" : "right";
+        activeCellStore.move(dir);
+      } else if (e.key.length === 1 || e.key === "Spacebar") {
         activeCellStore.formula = "";
         store.isEditing = true;
+      } else if (e.key === "Backspace" || e.key === "Delete") {
+        store.formula = "";
+        activeCellStore.formula = "";
       }
     }
   };
