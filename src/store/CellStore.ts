@@ -34,6 +34,14 @@ functions.set(
 
 type CellType = "empty" | "number" | "string" | "formula";
 
+type DisplayOptions = {
+  /**
+   * The number of decimal places to display.
+   * If undefined, the number of decimal places is not limited.
+   */
+  decimalPlaces?: number;
+}
+
 /**
  * A cell is a formula that can be evaluated.
  */
@@ -41,6 +49,7 @@ export class CellStore {
   formula: string = "";
   namespace: NamespaceStore;
   id: string;
+  displayOptions: DisplayOptions = {};
 
   /**
    * Whether the cell is currently being edited.
@@ -151,11 +160,14 @@ export class CellStore {
   /**
    * The display value of the cell.
    */
-  get displayValue(): string | number {
+  get displayValue(): string {
     const value = this.value;
     if (typeof value === "string") return value;
     if (value.length === 0) return "";
     const sum = value.reduce((a, b) => a + b, 0);
-    return sum / value.length;
+    const mean = sum / value.length;
+    if (this.displayOptions.decimalPlaces === undefined)
+      return mean.toString();
+    return mean.toFixed(this.displayOptions.decimalPlaces);
   }
 }

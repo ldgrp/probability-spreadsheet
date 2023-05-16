@@ -7,9 +7,8 @@ type ActiveCellLabelProps = {
 
 export const ActiveCellLabel = observer(({ store }: ActiveCellLabelProps) => {
 
-    const type = store.cell.displayValue 
     return (
-        <div className="py-1 px-4 w-28 text-sm text-gray-500 capitalize">
+        <div className="py-1 px-4 w-28 text-sm text-gray-500 capitalize select-none">
             {store.cell.type}
         </div>
     )

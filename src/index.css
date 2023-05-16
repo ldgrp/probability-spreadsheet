@@ -35,7 +35,7 @@ th {
 }
 
 .rowheader, .columnheader {
-  @apply font-bold bg-gray-100 border border-gray-300 text-gray-700 justify-center align-baseline;
+  @apply font-bold bg-gray-100 border border-gray-300 text-gray-700 justify-center align-baseline select-none;
 }
 
 .rowheader .header-editing,
