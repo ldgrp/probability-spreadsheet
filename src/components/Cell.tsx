@@ -1,6 +1,6 @@
 import { action, reaction } from "mobx";
 import { observer } from "mobx-react-lite";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { ActiveCellStore } from "../store/ui/ActiveCellStore";
 import { CellStore } from "../store/CellStore";
 import { arrowKeyToDirection } from "../utils/cells";
@@ -168,7 +168,7 @@ export const Cell = observer(({ store, activeCellStore }: CellProps) => {
         readOnly={!store.isEditing}
         onBlur={action(handleOnBlur)}
         onKeyDown={action(handleOnKeyDown)}
-        onMouseDown={action(handleOnMouseDown)}
+        onClick={action(handleOnMouseDown)}
         onFocus={action(handleOnFocus)}
         onDoubleClick={action(handleOnDoubleClick)}
         onChange={action(handleOnChange)}

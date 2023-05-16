@@ -3,15 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-white text-gray-900 flex min-h-screen justify-start;
-}
-
-.sheet-container {
-  @apply flex flex-col items-center bg-gray-50 border border-gray-200 rounded-lg shadow pb-0 overflow-hidden container;
-}
-
-.my-table {
-  @apply overflow-hidden m-2;
+  @apply bg-white text-gray-900 min-h-screen;
 }
 
 th {
@@ -19,7 +11,7 @@ th {
 }
 
 .cell {
-  @apply w-24 inline-flex border font-mono text-xs;
+  @apply w-24 inline-flex border font-mono text-xs flex-none;
 }
 
 .cell-header {
@@ -52,7 +44,7 @@ th {
 }
 
 .rowheader {
-  @apply w-8
+  @apply w-8;
 }
 
 .cell-number {
@@ -61,12 +53,4 @@ th {
 
 .cell-error {
   @apply bg-red-100;
-}
-
-.formula-container {
-  @apply flex w-full;
-}
-
-.formula-input {
-  @apply border-t w-full py-1 px-4 focus-visible:outline-none text-sm font-mono;
 }

@@ -32,6 +32,8 @@ functions.set(
   ([[mean], [std]]) => new LogNormal("lognormal", "LogNormal", N, mean, std).samples
 );
 
+type CellType = "empty" | "number" | "string" | "formula";
+
 /**
  * A cell is a formula that can be evaluated.
  */
@@ -39,6 +41,7 @@ export class CellStore {
   formula: string = "";
   namespace: NamespaceStore;
   id: string;
+
   /**
    * Whether the cell is currently being edited.
    */
@@ -94,39 +97,56 @@ export class CellStore {
     this.isFocused = true;
   }
 
+  get type(): CellType {
+    if (this.formula === "") {
+      return "empty";
+    }
+
+    if (this.formula.startsWith("=")) {
+      return "formula";
+    }
+
+    if (!isNaN(Number(this.formula))) {
+      return "number";
+    }
+
+    return "string";
+  }
+
   /**
    * The logical value of the cell.
    */
   get value(): CellValue {
-    if (this.formula === "") {
-      return [];
+    switch (this.type) {
+      case "empty":
+        return [];
+      case "number":
+        return [Number(this.formula)];
+      case "string":
+        return this.formula;
+      case "formula":
+        return this.evaluateFormula();
     }
-
-    if (this.formula.startsWith("=")) {
-      const fn = (identifier: string) => {
-        const value = this.namespace.evaluateCell(identifier);
-        if (Array.isArray(value)) return value;
-        return undefined;
-      };
-
-      try {
-        return evaluate(this.formula.slice(1), fn, functions);
-      } catch (e) {
-        if (e instanceof Error) {
-          if (e.message.includes("Cycle")) return "Error: Cycle detected";
-          return e.message;
-        }
-        return "Syntax error";
-      }
-    }
-
-    // Attempt to parse as a number
-    const value = Number(this.formula);
-    if (!isNaN(value)) {
-      return [value];
-    }
-    return this.formula;
   }
+
+  private evaluateFormula(): CellValue {
+    const fn = (identifier: string) => {
+      const value = this.namespace.evaluateCell(identifier);
+      if (Array.isArray(value)) return value;
+      return undefined;
+    };
+
+    try {
+      return evaluate(this.formula.slice(1), fn, functions);
+    } catch (e) {
+      if (e instanceof Error) {
+        if (e.message.includes("Cycle")) return "Error: Cycle detected";
+        return e.message;
+      }
+      return "Syntax error";
+    }
+  }
+
 
   /**
    * The display value of the cell.

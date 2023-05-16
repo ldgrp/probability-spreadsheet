@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { NamespaceStore } from "../store/store";
+import { Card } from "./Card";
 
 type DistributionBarProps = {
   store: NamespaceStore;
@@ -7,8 +8,7 @@ type DistributionBarProps = {
 
 export const DistributionBar = observer(({ store }: DistributionBarProps) => {
   return (
-    <div className="border border-gray-200 rounded-lg p-2 shadow">
-      <div className="text-sm">
+      <Card className="text-sm p-2">
       <span className="font-bold">Functions</span>
       <div className="font-mono">
         <div>triangular(a,b,c)</div>
@@ -17,7 +17,6 @@ export const DistributionBar = observer(({ store }: DistributionBarProps) => {
         <div>normal(mu, sigma)</div>
         <div>lognormal(mu, sigma)</div>
       </div>
-      </div>
-    </div>
+      </Card>
   );
 });

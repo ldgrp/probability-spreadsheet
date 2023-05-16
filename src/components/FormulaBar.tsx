@@ -29,9 +29,9 @@ export const FormulaBar = observer(({ store }: FormulaBarProps) => {
     }
 
     return (
-        <div className="formula-container">
+        <div className="flex w-full">
             <input
-                className="formula-input"
+                className="w-full py-1 px-4 focus-visible:outline-none text-sm font-mono"
                 type="text"
                 onKeyDown={action(handleOnKeyDown)}
                 onFocus={action(handleOnFocus)}

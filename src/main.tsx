@@ -33,8 +33,5 @@ runInAction(() => {
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <App store={store} />
-    <footer className="absolute bottom-0 right-0 m-2">
-      <a className="border-dotted hover:underline text-blue-500 border" href="https://ldgrp.me/ideas/probability-spreadsheet">Idea Page</a>
-    </footer>
   </React.StrictMode>
 );

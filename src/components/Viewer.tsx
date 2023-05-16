@@ -5,6 +5,7 @@ import { CellValue } from "../utils/cells";
 import { Fragment, useEffect, useRef } from "react";
 import mean from "@stdlib/stats/base/mean"
 import mediansorted from "@stdlib/stats/base/mediansorted"
+import { Card } from "./Card";
 
 type ViewerProps = {
   activeCellStore: ActiveCellStore;
@@ -26,11 +27,11 @@ export const Viewer = observer(({ activeCellStore }: ViewerProps) => {
   const value = activeCellStore.cell.value;
   const viewtype = getViewType(value);
   return (
-    <div className="rounded-lg flex border border-gray-200 shadow p-4 h-48 items-center justify-center">
+    <Card className="items-center justify-center h-48">
       {viewtype === "string" && <StringViewer value={value as string} />}
       {viewtype === "number" && <NumberViewer value={(value as number[])[0]} />}
       {viewtype === "array" && <ArrayViewer value={value as number[]} />}
-    </div>
+    </Card>
   );
 });
 

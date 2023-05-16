@@ -14,6 +14,9 @@ const App = observer(({ store }: AppProps) => {
       <Viewer activeCellStore={store.activeCellStore}/>
       <SheetCard store={store}/>
       <DistributionBar store={store}/>
+    <footer className="">
+      <a className="border-dotted hover:underline text-blue-500 border" href="https://ldgrp.me/ideas/probability-spreadsheet">Idea Page</a>
+    </footer>
     </div>
   );
 })

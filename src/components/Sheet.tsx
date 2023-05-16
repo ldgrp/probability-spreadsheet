@@ -11,7 +11,7 @@ type TableProps = {
 
 export const Sheet = observer(({ store }: TableProps) => {
   return (
-    <div role="table" className="my-table">
+    <div role="table" className="overflow-scroll h-full w-full">
       <div role="row" className="row">
         <div className="cell columnheader rowheader" role="columnheader">
           <span className={CELL_HEADER}>&nbsp;</span>
