@@ -47,7 +47,7 @@ enum TokenKind {
  */
 let environment: ((identifier: string) => number[] | undefined) | undefined;
 let functionEnvironment:
-  | Map<string, (params: number[]) => number[]>
+  | Map<string, (params: number[][]) => number[]>
   | undefined;
 
 const lexer = buildLexer([
@@ -102,12 +102,7 @@ function applyFunction_(name: string, args: number[][] | undefined): number[] {
     throw new Error(`Unknown function: ${name}`);
   }
   try {
-    const unwrappedArgs =
-      args?.map((arg) => {
-        if (arg.length !== 1) throw new Error("Illegal function argument");
-        return arg[0];
-      }) ?? [];
-    return fn(unwrappedArgs);
+    return fn(args ?? []);
   } catch (e) {
     throw new Error(`Error in function ${name}: ${e}`);
   }
@@ -186,7 +181,7 @@ const EXP = rule<TokenKind, number[]>();
 /*
 TERM
   = NUMBER
-  = [EXP, EXP]
+  = '[' EXP ',' EXP ']'
   = IDENTIFIER '(' EXP (',' EXP)* ')' // Functions
   = VARIABLE
   = ('+' | '-') TERM
@@ -240,7 +235,7 @@ EXP.setPattern(
 export function evaluate(
   expr: string,
   variables?: (identifier: string) => number[] | undefined,
-  functions?: Map<string, (args: number[]) => number[]>
+  functions?: Map<string, (args: number[][]) => number[]>
 ): number[] {
   const tokens = lexer.parse(expr);
   if (variables) environment = variables;

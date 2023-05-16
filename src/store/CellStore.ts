@@ -11,25 +11,25 @@ import {
 } from "../distributions/distributions";
 
 const N = 10000;
-const functions = new Map<string, (args: number[]) => number[]>();
+const functions = new Map<string, (args: number[][]) => number[]>();
 functions.set(
   "triangular",
-  ([a, b, c]) =>
-    new Triangular("triangular", "Triangular", N, a, b, c ?? (a + b) / 2)
+  ([[a], [b], c]) =>
+    new Triangular("triangular", "Triangular", N, a, b, c?.[0] ?? (a + b) / 2)
       .samples
 );
 functions.set(
   "uniform",
-  ([a, b]) => new Uniform("uniform", "Uniform", N, a, b).samples
+  ([[a], [b]]) => new Uniform("uniform", "Uniform", N, a, b).samples
 );
-functions.set("beta", ([a, b]) => new Beta("beta", "Beta", N, a, b).samples);
+functions.set("beta", ([[a], [b]]) => new Beta("beta", "Beta", N, a, b).samples);
 functions.set(
   "normal",
-  ([mean, std]) => new Normal("normal", "Normal", N, mean, std).samples
+  ([[mean], [std]]) => new Normal("normal", "Normal", N, mean, std).samples
 );
 functions.set(
   "lognormal",
-  ([mean, std]) => new LogNormal("lognormal", "LogNormal", N, mean, std).samples
+  ([[mean], [std]]) => new LogNormal("lognormal", "LogNormal", N, mean, std).samples
 );
 
 /**
