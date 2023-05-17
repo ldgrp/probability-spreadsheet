@@ -11,7 +11,7 @@ type SheetCardProps = {
 
 export const SheetCard = observer(({ store }: SheetCardProps) => {
     return (
-    <Card className="items-center">
+    <Card className="relative items-center">
         <div className="flex w-full divide-x my-1">
             <ActiveCellLabel store={store.activeCellStore}/>
             <FormulaBar store={store.activeCellStore}/>

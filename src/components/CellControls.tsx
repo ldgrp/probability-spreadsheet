@@ -76,6 +76,7 @@ export const ControlButton = observer(
         {isOpen && (
           <Popover.Panel
             static
+            className="z-10"
             ref={refs.setFloating}
             style={floatingStyles}
             {...getFloatingProps()}
